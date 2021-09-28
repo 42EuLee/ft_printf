@@ -35,20 +35,22 @@ char	*ft_strchr(char *str, char c)
 	return (NULL);
 }
 
-void	ft_putnbr_u(unsigned int n)
+int	ft_putnbr_u(long n, int len)
 {
 	if (n < 0)
 	{
 		n = UINT_MAX - n + 1;
-		ft_putnbr_u(n);
+		len = ft_count_n(n);
+		return (ft_putnbr_u(n, len));
 	}
 	else if (n < 10)
 		ft_putchar(n + 48);
 	else
 	{
-		ft_putnbr_u(n / 10);
-		ft_putnbr_u(n % 10);
+		ft_putnbr_u(n / 10, len);
+		ft_putnbr_u(n % 10, len);
 	}
+	return (len);
 }
 
 void	ft_putnbr(int n)
@@ -72,11 +74,13 @@ void	ft_putnbr(int n)
 	}
 }
 
-int	ft_count_n(int d)
+int	ft_count_n(long d)
 {
-	unsigned int	i;
+	long	i;
 
 	i = 0;
+	if (d < 0)
+		i++;
 	while (d / 10)
 	{
 		i++;
@@ -86,9 +90,9 @@ int	ft_count_n(int d)
 	return (i);
 }
 
-int	ft_count_hexa(unsigned long d)
+int	ft_count_hexa(unsigned long long d)
 {
-	unsigned long	i;
+	int	i;
 
 	i = 0;
 	while (d / 16)
@@ -100,8 +104,14 @@ int	ft_count_hexa(unsigned long d)
 	return (i);
 }
 
-int	ft_print_hexa(unsigned long d, int len, int caps, int p)
+int	ft_print_hexa(unsigned long long d, int len, int caps, int p)
 {
+	/*if (d < 0)
+	{
+		d = UINT_MAX + d + 1;
+		len = ft_count_hexa(d);
+		return (ft_print_hexa(d, len, caps, p));
+	}*/
 	if (p == 1)
 	{
 		p--;
@@ -120,23 +130,22 @@ int	ft_print_hexa(unsigned long d, int len, int caps, int p)
 	return (len);
 }
 
-int	ft_print_u(t_list *spec, va_list args)
+int	ft_print_u(va_list args)
 {
 	unsigned int	d;
 	int				len;
 
 	d = va_arg(args, unsigned int);
 	len = ft_count_n(d);
-	ft_putnbr_u(d);
-	return (len);
+	return (ft_putnbr_u(d, len));
 }
 
 int	ft_print_x(t_list *spec, va_list args)
 {
-	int	len;
-	int	d;
-	int	caps;
-	int	p;
+	int				len;
+	unsigned int	d;
+	int				caps;
+	int				p;
 
 	p = 0;
 	caps = 0;
@@ -147,7 +156,7 @@ int	ft_print_x(t_list *spec, va_list args)
 	return (ft_print_hexa(d, len, caps, p));
 }
 
-int	ft_print_s(t_list *spec, va_list args)
+int	ft_print_s(va_list args)
 {
 	char	*str;
 	int		i;
@@ -165,7 +174,7 @@ int	ft_print_s(t_list *spec, va_list args)
 	return (i);
 }
 
-int	ft_print_d(t_list *spec, va_list args)
+int	ft_print_d(va_list args)
 {
 	int	d;
 	int	len;
@@ -176,7 +185,7 @@ int	ft_print_d(t_list *spec, va_list args)
 	return (len);
 }
 
-int	ft_print_c(t_list *spec, va_list args)
+int	ft_print_c(va_list args)
 {
 	char	c;
 
@@ -185,16 +194,16 @@ int	ft_print_c(t_list *spec, va_list args)
 	return (1);
 }
 
-int	ft_print_p(t_list *spec, va_list args)
+int	ft_print_p(va_list args)
 {
-	unsigned long	d;
-	int				len;
-	int				caps;
-	int				p;
+	unsigned long long		d;
+	int						len;
+	int						caps;
+	int						p;
 
 	p = 1;
 	caps = 0;
-	d = (unsigned long)va_arg(args, void *);
+	d = (unsigned long long)va_arg(args, void *);
 	len = ft_count_hexa(d);
 	return (ft_print_hexa(d, len, caps, p) + 2);
 }
@@ -202,17 +211,17 @@ int	ft_print_p(t_list *spec, va_list args)
 int	ft_specifier(t_list *spec, va_list args)
 {
 	if (spec->c == 'c')
-		return (ft_print_c(spec, args));
+		return (ft_print_c(args));
 	if (spec->c == 'p')
-		return (ft_print_p(spec, args));
+		return (ft_print_p(args));
 	if (spec->c == 's')
-		return (ft_print_s(spec, args));
+		return (ft_print_s(args));
 	if (spec->c == 'd' || spec->c == 'i')
-		return (ft_print_d(spec, args));
+		return (ft_print_d(args));
 	if (spec->c == 'x' || spec->c == 'X')
 		return (ft_print_x(spec, args));
 	if (spec->c == 'u')
-		return (ft_print_u(spec, args));
+		return (ft_print_u(args));
 	if (spec->c == '%')
 	{
 		ft_putchar('%');
@@ -274,18 +283,52 @@ int	main(void)
 	p = "1234";
 	F("I love pie alot\n")
 	F("HELLOWORLD%sHELLOWORLD\n", "hi")
-	F("[%d%d]\n", 01234, 01234)
+	F("[%d]\n", -1)
 	F("[%c]\n", 69)
 	F("[%x]\n", 1234)
 	F("[%X]\n", 1246)
 	F("[%i]\n", 0x1234)
 	F("[%u]\n", INT_MIN)
 	F("[%%%%]\n")
-	F("[%p]\n", "1234")
+	F("[%p]\n", NULL)
 	F("[%%%c%d%p%X]\n\n", 50, 01234, NULL, 1234)
 
-	ft_printf("%d\n", ft_printf("%p\n", "123456"));
-	ft_printf("%d\n", printf("%p\n", "123456"));
+	ft_printf("%d\n", ft_printf("%p\n", p));
+	ft_printf("%d\n", printf("%p\n", p));
+	ft_printf("ft_printf returns %d\n", ft_printf("%d\n", -1));
+	ft_printf("printf returns %d\n\n", printf("%d\n", -1));
+	printf("ft_printf returns %d\n", ft_printf("%x\n", -1));
+	printf("printf returns %d\n\n", printf("%x\n", -1));
+	printf("ft_printf returns %d\n", ft_printf("%u\n", -1));
+	printf("printf returns %d\n", printf("%u\n", -1));
 	ft_printf("[%p]\n", p);
 	printf("[%p]\n", p);
+	ft_printf("ft_printf returns %d\n", ft_printf("%p\n", LONG_MIN));
+	ft_printf("printf returns %d\n\n", printf("%p\n", LONG_MIN));
+	ft_printf("ft_printf returns %d\n\n", ft_printf("%p\n", LONG_MAX));
+	ft_printf("printf returns %d\n\n", printf("%p\n", LONG_MAX));
+	ft_printf("ft_printf returns %d\n", ft_printf("%p\n", INT_MIN));
+	ft_printf("printf returns %d\n\n", printf("%p\n", INT_MIN));
+	ft_printf("ft_printf returns %d\n", ft_printf("%p\n", INT_MAX));
+	ft_printf("printf returns %d\n\n", printf("%p\n", INT_MAX));
+	ft_printf("ft_printf returns %d\n", ft_printf("%p\n", ULONG_MAX));
+	ft_printf("printf returns %d\n\n", printf("%p\n", ULONG_MAX));
+	ft_printf("ft_printf returns %d\n", ft_printf("%p\n", -ULONG_MAX));
+	ft_printf("printf returns %d\n\n", printf("%p\n", -ULONG_MAX));
+	ft_printf("ft_printf returns %d\n", ft_printf("%p\n", 0));
+	ft_printf("printf returns %d\n\n\n\n", printf("%p\n", 0));
+	ft_printf("ft_printf returns %d\n", ft_printf("%x\n", LONG_MIN));
+	ft_printf("printf returns %d\n\n", printf("%x\n", LONG_MIN));
+	ft_printf("ft_printf returns %d\n\n", ft_printf("%x\n", LONG_MAX));
+	ft_printf("printf returns %d\n\n", printf("%x\n", LONG_MAX));
+	ft_printf("ft_printf returns %d\n", ft_printf("%x\n", INT_MIN));
+	ft_printf("printf returns %d\n\n", printf("%x\n", INT_MIN));
+	ft_printf("ft_printf returns %d\n", ft_printf("%x\n", INT_MAX));
+	ft_printf("printf returns %d\n\n", printf("%x\n", INT_MAX));
+	ft_printf("ft_printf returns %d\n", ft_printf("%x\n", ULONG_MAX));
+	ft_printf("printf returns %d\n\n", printf("%x\n", ULONG_MAX));
+	ft_printf("ft_printf returns %d\n", ft_printf("%x\n", -ULONG_MAX));
+	ft_printf("printf returns %d\n\n", printf("%x\n", -ULONG_MAX));
+	ft_printf("ft_printf returns %d\n", ft_printf("%x\n", 0));
+	ft_printf("printf returns %d\n", printf("%x\n", 0));
 }

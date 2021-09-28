@@ -23,7 +23,7 @@ int	main(void)
 	F("[%i]\n", 0x1234)
 	F("[%u]\n", INT_MIN)
 	F("[%%%%]\n")
-	F("[%p]\n", 0)
+	F("[%p]\n", NULL)
 	F("[%%%c%d%p%X]\n\n", 50, 01234, NULL, 1234)
 
 	ft_printf("%d\n", ft_printf("%u\n", 123456));

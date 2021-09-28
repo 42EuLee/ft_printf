@@ -1,6 +1,6 @@
 #include "ft_printf.h"
 
-int	ft_print_s(t_list *spec, va_list args)
+int	ft_print_s(va_list args)
 {
 	char	*str;
 	int		i;

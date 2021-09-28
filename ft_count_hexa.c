@@ -1,8 +1,8 @@
 #include "ft_printf.h"
 
-int	ft_count_hexa(unsigned long d)
+int	ft_count_hexa(unsigned long long d)
 {
-	unsigned long	i;
+	int	i;
 
 	i = 0;
 	while (d / 16)

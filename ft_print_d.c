@@ -1,6 +1,6 @@
 #include "ft_printf.h"
 
-int	ft_print_d(t_list *spec, va_list args)
+int	ft_print_d(va_list args)
 {
 	int	d;
 	int	len;

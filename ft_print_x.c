@@ -2,10 +2,10 @@
 
 int	ft_print_x(t_list *spec, va_list args)
 {
-	int	len;
-	int	d;
-	int	caps;
-	int	p;
+	int					len;
+	unsigned int		d;
+	int					caps;
+	int					p;
 
 	p = 0;
 	caps = 0;

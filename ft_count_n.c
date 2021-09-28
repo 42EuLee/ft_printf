@@ -1,10 +1,12 @@
 #include "ft_printf.h"
 
-int	ft_count_n(int d)
+int	ft_count_n(long d)
 {
-	unsigned int	i;
+	long	i;
 
 	i = 0;
+	if (d < 0)
+		i++;
 	while (d / 10)
 	{
 		i++;
@@ -13,4 +15,3 @@ int	ft_count_n(int d)
 	i++;
 	return (i);
 }
-

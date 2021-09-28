@@ -3,17 +3,17 @@
 int	ft_specifier(t_list *spec, va_list args)
 {
 	if (spec->c == 'c')
-		return (ft_print_c(spec, args));
+		return (ft_print_c(args));
 	if (spec->c == 'p')
-		return (ft_print_p(spec, args));
+		return (ft_print_p(args));
 	if (spec->c == 's')
-		return (ft_print_s(spec, args));
+		return (ft_print_s(args));
 	if (spec->c == 'd' || spec->c == 'i')
-		return (ft_print_d(spec, args));
+		return (ft_print_d(args));
 	if (spec->c == 'x' || spec->c == 'X')
 		return (ft_print_x(spec, args));
 	if (spec->c == 'u')
-		return (ft_print_u(spec, args));
+		return (ft_print_u(args));
 	if (spec->c == '%')
 	{
 		ft_putchar('%');

@@ -1,6 +1,6 @@
 #include "ft_printf.h"
 
-int	ft_print_hexa(unsigned long d, int len, int caps, int p)
+int	ft_print_hexa(unsigned long long d, int len, int caps, int p)
 {
 	if (p == 1)
 	{
